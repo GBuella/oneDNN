@@ -116,10 +116,12 @@ status_t pooling_desc_init(pooling_desc_type *pool_desc, prop_kind_t prop_kind,
                 consistency
                         = consistency && dilation[i - 2] < src_desc->dims[i];
         }
-        // Dilated kernel should fit in source.
-        consistency = consistency
-                && dilated_kernel <= src_desc->dims[i] + padding_l[i - 2]
-                                + padding_r[i - 2];
+        if (dilation) {
+                // Dilated kernel should fit in source.
+                consistency = consistency
+                        && dilated_kernel <= src_desc->dims[i] + padding_l[i - 2]
+                                        + padding_r[i - 2];
+        }
     }
 
     if (!consistency) return invalid_arguments;
